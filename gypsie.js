@@ -47,7 +47,6 @@ var stop = function(){
 }
 
 
-
 /// returns true if this string contains any of the strings in strArray
 String.prototype.containsAny = function(strArray){
 	for (var i = 0; i < strArray.length; i++) {
