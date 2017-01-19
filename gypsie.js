@@ -11,35 +11,31 @@ var numFilteredAds = 0;
 var nextUpdate = null;
 var clearMySight = function(){
 	var numHighlightedAds = 0;
-	
+
 	$(adSelector).filter(function(){
 		// Extract ad text
-		var $this = $(this);
-		var text = $this.text().toLowerCase();
+		$ad = $(this);
+		var text = $ad.text().toLowerCase();
 
 		// Highlight
-		for(var i = 0; i < highlightTriggers.length; ++i){
-			if(text.indexOf(highlightTriggers[i]) !== -1){
-				$this.css('background', '#5f5');
-				numHighlightedAds++;
-			}
+		if(text.containsAny(highlightTriggers)){
+			$ad.css('background', '#5f5');
+			numHighlightedAds++;
 		}
 
-		// Filter by returning true
-		for(var i = 0; i < filterTriggers.length; ++i){
-			if(text.indexOf(filterTriggers[i]) !== -1){
-				numFilteredAds++;
-				return true;
-			}
+		// Filter out by returning true
+		else if(text.containsAny(filterTriggers)){
+			numFilteredAds++;
+			return true;
 		}
 		return false;
 	}).remove();
 
-
-	nextUpdate = setTimeout(clearMySight, refreshInterval);
 	console.log('highlighted ' + numHighlightedAds + ' of ' + $(adSelector).length + ' ads. (' + numFilteredAds + ' filtered)');
-
+	
+	// Scroll page down to load more ads and then repeat
 	scrollBy(0, scrollDown);
+	nextUpdate = setTimeout(clearMySight, refreshInterval);
 }
 
 var start = function(){
@@ -48,6 +44,18 @@ var start = function(){
 
 var stop = function(){
 	clearTimeout(nextUpdate);
+}
+
+
+
+/// returns true if this string contains any of the strings in strArray
+String.prototype.containsAny = function(strArray){
+	for (var i = 0; i < strArray.length; i++) {
+		if(this.indexOf(strArray[i]) !== -1){
+			return true;
+		}
+	}
+	return false;
 }
 
 
